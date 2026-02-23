@@ -7,4 +7,3 @@ obj/
 *.suo
 *.sln.docstates
 .DS_Store
-NativeBinaries/
