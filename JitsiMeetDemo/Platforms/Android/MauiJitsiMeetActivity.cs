@@ -6,6 +6,7 @@ using System.Linq;
 using Com.Facebook.React.Modules.Core;
 using AndroidX.Core.App;
 using AndroidX.AppCompat.App;
+using AndroidX.LocalBroadcastManager.Content;
 
 namespace JitsiMeetDemo.Platforms.Android
 {
@@ -14,9 +15,36 @@ namespace JitsiMeetDemo.Platforms.Android
     {
         private JitsiMeetView _view;
 
+        private JitsiBroadcastReceiver _broadcastReceiver;
+
+        private class JitsiBroadcastReceiver : global::Android.Content.BroadcastReceiver
+        {
+            private readonly MauiJitsiMeetActivity _activity;
+
+            public JitsiBroadcastReceiver(MauiJitsiMeetActivity activity)
+            {
+                _activity = activity;
+            }
+
+            public override void OnReceive(Context? context, Intent? intent)
+            {
+                var action = intent?.Action;
+                if (action == "org.jitsi.meet.CONFERENCE_TERMINATED" || action == "org.jitsi.meet.READY_TO_CLOSE")
+                {
+                    _activity.Finish();
+                }
+            }
+        }
+
         protected override void OnCreate(Bundle? savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
+
+            _broadcastReceiver = new JitsiBroadcastReceiver(this);
+            var intentFilter = new IntentFilter();
+            intentFilter.AddAction("org.jitsi.meet.CONFERENCE_TERMINATED");
+            intentFilter.AddAction("org.jitsi.meet.READY_TO_CLOSE");
+            LocalBroadcastManager.GetInstance(this).RegisterReceiver(_broadcastReceiver, intentFilter);
 
             _view = new JitsiMeetView(this);
             global::Android.Content.Intent intent = Intent;
@@ -32,10 +60,12 @@ namespace JitsiMeetDemo.Platforms.Android
                 userInfo.Email = email;
 
             var options = new JitsiMeetConferenceOptions.Builder()
+                .SetServerURL(new Java.Net.URL("https://meet.jit.si"))
                 .SetRoom(roomName)
                 .SetUserInfo(userInfo)
                 .SetFeatureFlag("chat.enabled", true)
-                .SetFeatureFlag("invite.enabled", false)
+                .SetFeatureFlag("invite.enabled", true)
+                .SetFeatureFlag("prejoinpage.enabled", true)
                 .Build();
 
             _view.Join(options);
@@ -45,6 +75,7 @@ namespace JitsiMeetDemo.Platforms.Android
         protected override void OnDestroy()
         {
             base.OnDestroy();
+            LocalBroadcastManager.GetInstance(this).UnregisterReceiver(_broadcastReceiver);
             _view?.Dispose();
             JitsiMeetActivityDelegate.OnHostDestroy(this);
         }
@@ -97,6 +128,7 @@ namespace JitsiMeetDemo.Platforms.Android
 
         public void RequestPermissions(string[] permissions, int requestCode, Com.Facebook.React.Modules.Core.IPermissionListener listener)
         {
+            ActivityCompat.RequestPermissions(this, permissions, requestCode);
         }
 
         public new bool ShouldShowRequestPermissionRationale(string permission)

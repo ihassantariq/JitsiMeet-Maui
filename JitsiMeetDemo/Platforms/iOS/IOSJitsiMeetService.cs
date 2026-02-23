@@ -22,10 +22,12 @@ namespace JitsiMeetDemo.Services
 
             var options = JitsiMeetConferenceOptions.FromBuilder(builder =>
             {
+                builder.ServerURL = new NSUrl("https://meet.jit.si");
                 builder.Room = roomName;
                 builder.UserInfo = userInfo;
-                // Optional: set custom server explicitly if missing
-                // builder.ServerURL = new NSUrl("https://meet.jit.si");
+                builder.SetFeatureFlag("chat.enabled", true);
+                builder.SetFeatureFlag("invite.enabled", true);
+                builder.SetFeatureFlag("prejoinpage.enabled", true);
             });
 
             _jitsiMeetView = new JitsiMeetView
@@ -72,6 +74,14 @@ namespace JitsiMeetDemo.Services
             }
 
             public override void ConferenceTerminated(NSDictionary data)
+            {
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    _parent.Cleanup();
+                });
+            }
+
+            public override void ReadyToClose(NSDictionary data)
             {
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
