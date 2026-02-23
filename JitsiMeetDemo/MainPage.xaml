@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="JitsiMeetDemo.MainPage">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="25" Padding="30,0" VerticalOptions="Center">
+
+            <Image Source="dotnet_bot.png"
+                   SemanticProperties.Description="Cute dot net bot waving hi to you!"
+                   HeightRequest="200"
+                   HorizontalOptions="Center" />
+
+            <Label Text="Jitsi Meet MAUI Demo"
+                   SemanticProperties.HeadingLevel="Level1"
+                   FontSize="32"
+                   HorizontalOptions="Center" />
+
+            <Label Text="Enter room name to join or create a video conference"
+                   SemanticProperties.HeadingLevel="Level2"
+                   SemanticProperties.Description="Welcome to Jitsi Meet"
+                   FontSize="18"
+                   HorizontalOptions="Center" />
+
+            <Entry x:Name="RoomEntry" Placeholder="Room Name (e.g., MauiMeet2024)" />
+            <Entry x:Name="NameEntry" Placeholder="Your Name (Optional)" />
+            <Entry x:Name="EmailEntry" Placeholder="Your Email (Optional)" />
+
+            <Button x:Name="JoinBtn"
+                    Text="Join Meeting"
+                    SemanticProperties.Hint="Joins the video conference"
+                    Clicked="OnJoinClicked"
+                    HorizontalOptions="Center" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

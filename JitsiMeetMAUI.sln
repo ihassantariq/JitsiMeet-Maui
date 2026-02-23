@@ -1,0 +1,62 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JitsiMeetDemo", "JitsiMeetDemo\JitsiMeetDemo.csproj", "{8E2677A3-0ED7-4278-928B-91D02A7C9E57}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JitsiMeet.iOS.Binding", "JitsiMeet.iOS.Binding\JitsiMeet.iOS.Binding.csproj", "{932F9C71-7D77-4DFA-8460-4B003920D873}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JitsiMeet.Android.Binding", "JitsiMeet.Android.Binding\JitsiMeet.Android.Binding.csproj", "{29D0A11F-2B93-4D4A-B853-9D786E3D7067}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8E2677A3-0ED7-4278-928B-91D02A7C9E57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E2677A3-0ED7-4278-928B-91D02A7C9E57}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E2677A3-0ED7-4278-928B-91D02A7C9E57}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{8E2677A3-0ED7-4278-928B-91D02A7C9E57}.Debug|x64.Build.0 = Debug|Any CPU
+		{8E2677A3-0ED7-4278-928B-91D02A7C9E57}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8E2677A3-0ED7-4278-928B-91D02A7C9E57}.Debug|x86.Build.0 = Debug|Any CPU
+		{8E2677A3-0ED7-4278-928B-91D02A7C9E57}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E2677A3-0ED7-4278-928B-91D02A7C9E57}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E2677A3-0ED7-4278-928B-91D02A7C9E57}.Release|x64.ActiveCfg = Release|Any CPU
+		{8E2677A3-0ED7-4278-928B-91D02A7C9E57}.Release|x64.Build.0 = Release|Any CPU
+		{8E2677A3-0ED7-4278-928B-91D02A7C9E57}.Release|x86.ActiveCfg = Release|Any CPU
+		{8E2677A3-0ED7-4278-928B-91D02A7C9E57}.Release|x86.Build.0 = Release|Any CPU
+		{932F9C71-7D77-4DFA-8460-4B003920D873}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{932F9C71-7D77-4DFA-8460-4B003920D873}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{932F9C71-7D77-4DFA-8460-4B003920D873}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{932F9C71-7D77-4DFA-8460-4B003920D873}.Debug|x64.Build.0 = Debug|Any CPU
+		{932F9C71-7D77-4DFA-8460-4B003920D873}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{932F9C71-7D77-4DFA-8460-4B003920D873}.Debug|x86.Build.0 = Debug|Any CPU
+		{932F9C71-7D77-4DFA-8460-4B003920D873}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{932F9C71-7D77-4DFA-8460-4B003920D873}.Release|Any CPU.Build.0 = Release|Any CPU
+		{932F9C71-7D77-4DFA-8460-4B003920D873}.Release|x64.ActiveCfg = Release|Any CPU
+		{932F9C71-7D77-4DFA-8460-4B003920D873}.Release|x64.Build.0 = Release|Any CPU
+		{932F9C71-7D77-4DFA-8460-4B003920D873}.Release|x86.ActiveCfg = Release|Any CPU
+		{932F9C71-7D77-4DFA-8460-4B003920D873}.Release|x86.Build.0 = Release|Any CPU
+		{29D0A11F-2B93-4D4A-B853-9D786E3D7067}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29D0A11F-2B93-4D4A-B853-9D786E3D7067}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29D0A11F-2B93-4D4A-B853-9D786E3D7067}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{29D0A11F-2B93-4D4A-B853-9D786E3D7067}.Debug|x64.Build.0 = Debug|Any CPU
+		{29D0A11F-2B93-4D4A-B853-9D786E3D7067}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{29D0A11F-2B93-4D4A-B853-9D786E3D7067}.Debug|x86.Build.0 = Debug|Any CPU
+		{29D0A11F-2B93-4D4A-B853-9D786E3D7067}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29D0A11F-2B93-4D4A-B853-9D786E3D7067}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29D0A11F-2B93-4D4A-B853-9D786E3D7067}.Release|x64.ActiveCfg = Release|Any CPU
+		{29D0A11F-2B93-4D4A-B853-9D786E3D7067}.Release|x64.Build.0 = Release|Any CPU
+		{29D0A11F-2B93-4D4A-B853-9D786E3D7067}.Release|x86.ActiveCfg = Release|Any CPU
+		{29D0A11F-2B93-4D4A-B853-9D786E3D7067}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

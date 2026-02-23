@@ -1,0 +1,10 @@
+bin/
+obj/
+.vs/
+.idea/
+*.user
+*.userosscache
+*.suo
+*.sln.docstates
+.DS_Store
+NativeBinaries/

@@ -1,0 +1,3 @@
+namespace JitsiMeet.iOS.Binding {
+
+}
