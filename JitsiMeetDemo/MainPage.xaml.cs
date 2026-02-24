@@ -10,11 +10,29 @@ public partial class MainPage : ContentPage
         _jitsiMeetService = jitsiMeetService;
     }
 
-    private void OnJoinClicked(object sender, EventArgs e)
+    private async void OnJoinClicked(object sender, EventArgs e)
     {
         if (string.IsNullOrWhiteSpace(RoomEntry.Text))
         {
-            DisplayAlert("Error", "Please enter a room name", "OK");
+            await DisplayAlert("Error", "Please enter a room name", "OK");
+            return;
+        }
+
+        var cameraStatus = await Permissions.CheckStatusAsync<Permissions.Camera>();
+        if (cameraStatus != PermissionStatus.Granted)
+        {
+            cameraStatus = await Permissions.RequestAsync<Permissions.Camera>();
+        }
+
+        var micStatus = await Permissions.CheckStatusAsync<Permissions.Microphone>();
+        if (micStatus != PermissionStatus.Granted)
+        {
+            micStatus = await Permissions.RequestAsync<Permissions.Microphone>();
+        }
+
+        if (cameraStatus != PermissionStatus.Granted || micStatus != PermissionStatus.Granted)
+        {
+            await DisplayAlert("Permissions Denied", "Camera and Microphone permissions are required to join the meeting.", "OK");
             return;
         }
 
