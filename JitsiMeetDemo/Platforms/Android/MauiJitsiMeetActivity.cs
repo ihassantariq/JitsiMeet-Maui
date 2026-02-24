@@ -10,7 +10,22 @@ using AndroidX.LocalBroadcastManager.Content;
 
 namespace JitsiMeetDemo.Platforms.Android
 {
-    [Activity(Theme = "@style/Maui.SplashTheme", Exported = true)]
+    [Activity(
+        Theme = "@style/Maui.SplashTheme", 
+        Exported = true, 
+        LaunchMode = global::Android.Content.PM.LaunchMode.SingleTask, 
+        ConfigurationChanges = global::Android.Content.PM.ConfigChanges.Keyboard | 
+            global::Android.Content.PM.ConfigChanges.KeyboardHidden | 
+            global::Android.Content.PM.ConfigChanges.Mnc | 
+            global::Android.Content.PM.ConfigChanges.Mcc | 
+            global::Android.Content.PM.ConfigChanges.Navigation | 
+            global::Android.Content.PM.ConfigChanges.Orientation | 
+            global::Android.Content.PM.ConfigChanges.ScreenLayout | 
+            global::Android.Content.PM.ConfigChanges.ScreenSize | 
+            global::Android.Content.PM.ConfigChanges.SmallestScreenSize | 
+            global::Android.Content.PM.ConfigChanges.Touchscreen | 
+            global::Android.Content.PM.ConfigChanges.UiMode,
+        SupportsPictureInPicture = true)]
     public class MauiJitsiMeetActivity : AppCompatActivity, Org.Jitsi.Meet.Sdk.IJitsiMeetActivityInterface
     {
         private JitsiMeetView _view;
@@ -66,6 +81,8 @@ namespace JitsiMeetDemo.Platforms.Android
                 .SetFeatureFlag("chat.enabled", true)
                 .SetFeatureFlag("invite.enabled", true)
                 .SetFeatureFlag("prejoinpage.enabled", true)
+                .SetFeatureFlag("welcomepage.enabled", false)
+                .SetConfigOverride("disableDeepLinking", "true")
                 .Build();
 
             _view.Join(options);
@@ -86,10 +103,15 @@ namespace JitsiMeetDemo.Platforms.Android
             JitsiMeetActivityDelegate.OnHostResume(this);
         }
 
+        protected override void OnPause()
+        {
+            base.OnPause();
+            JitsiMeetActivityDelegate.OnHostPause(this);
+        }
+
         protected override void OnStop()
         {
             base.OnStop();
-            JitsiMeetActivityDelegate.OnHostPause(this);
         }
 
         protected override void OnActivityResult(int requestCode, Result resultCode, Intent? data)
