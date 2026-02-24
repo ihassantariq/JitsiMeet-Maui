@@ -6,12 +6,12 @@
     <ScrollView>
         <VerticalStackLayout Spacing="25" Padding="30,0" VerticalOptions="Center">
 
-            <Image Source="dotnet_bot.png"
-                   SemanticProperties.Description="Cute dot net bot waving hi to you!"
+            <Image Source="jitsi_logo.png"
+                   SemanticProperties.Description="Jitsi Meet Logo"
                    HeightRequest="200"
                    HorizontalOptions="Center" />
 
-            <Label Text="Jitsi Meet MAUI Demo"
+            <Label Text="Jitsi Meet MAUI"
                    SemanticProperties.HeadingLevel="Level1"
                    FontSize="32"
                    HorizontalOptions="Center" />
@@ -24,7 +24,6 @@
 
             <Entry x:Name="RoomEntry" Placeholder="Room Name (e.g., MauiMeet2024)" />
             <Entry x:Name="NameEntry" Placeholder="Your Name (Optional)" />
-            <Entry x:Name="EmailEntry" Placeholder="Your Email (Optional)" />
 
             <Button x:Name="JoinBtn"
                     Text="Join Meeting"

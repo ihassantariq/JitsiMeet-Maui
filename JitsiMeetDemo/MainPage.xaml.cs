@@ -18,6 +18,6 @@ public partial class MainPage : ContentPage
             return;
         }
 
-        _jitsiMeetService?.JoinMeeting(RoomEntry.Text, NameEntry.Text, EmailEntry.Text);
+        _jitsiMeetService?.JoinMeeting(RoomEntry.Text, NameEntry.Text, "");
     }
 }
