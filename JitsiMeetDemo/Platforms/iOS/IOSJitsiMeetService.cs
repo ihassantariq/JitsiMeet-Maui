@@ -28,6 +28,8 @@ namespace JitsiMeetDemo.Services
                 builder.SetFeatureFlag("chat.enabled", true);
                 builder.SetFeatureFlag("invite.enabled", true);
                 builder.SetFeatureFlag("prejoinpage.enabled", true);
+                builder.SetFeatureFlag("welcomepage.enabled", false);
+                builder.SetConfigOverride("disableDeepLinking", true);
             });
 
             _jitsiMeetView = new JitsiMeetView
