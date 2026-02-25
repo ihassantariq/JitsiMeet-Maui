@@ -70,8 +70,7 @@ JitsiMeetMAUI/
 │       ├── WebRTC.xcframework
 │       └── GiphyUISDK.xcframework
 │
-├── download_deps.sh                   # Script to fetch Android deps
-└── auto_rename_aars.sh                # Fixes AAR naming conflicts at build
+└── pad_icons.py                       # Utility script for icon padding
 ```
 
 ---
@@ -218,20 +217,25 @@ public enum WebRTCLoggingSeverity : long { Verbose, Info, Warning, Error, None }
 
 The Jitsi Meet Android SDK (v12.0.0) has ~30 transitive React Native dependencies that must be present at runtime. These are **not** NuGet packages — they are raw `.aar` / `.jar` files hosted in Jitsi's own Maven repository.
 
-**`download_deps.sh`** fetches them all:
+#### Downloading Dependencies with Gradle
 
-```bash
-./download_deps.sh
-```
+The easiest way to resolve and download all transitive dependencies is to use **Microsoft's Xamarin Gradle Dependency script**. This is the same approach documented in the [maui-native-sdk-bindings](https://github.com/ihassantariq/maui-native-sdk-bindings) guide (see **Step 3: Identify and Add All Transitive Dependencies**).
 
-This script downloads from two sources:
+1. **Create a minimal Android Studio project** with an Android Library module. Place the Jitsi AAR in a `libs/` folder and reference it in the module's `build.gradle`.
+2. **Apply Microsoft's Gradle script** by adding this line to the module's `build.gradle`:
+   ```groovy
+   apply from: 'https://raw.githubusercontent.com/xamarin/XamarinComponents/main/Util/AndroidGradleDependencyInfo.gradle'
+   ```
+3. **Run the task:**
+   ```bash
+   ./gradlew :{ModuleName}:xamarin
+   ```
+   This automatically resolves all transitive dependencies, copies the AAR/JAR files into a `xamarin/` folder, and prints the full list of Maven coordinates.
+4. **Copy the resolved files** from the `xamarin/` folder into `NativeBinaries/android/deps/`.
 
-| Source | What |
-|---|---|
-| `github.com/jitsi/jitsi-maven-repository` | Jitsi-patched React Native modules (e.g. `react-native-webrtc`, `react-native-svg`, etc.) |
-| `repo1.maven.org` (Maven Central) | Standard deps like `hermes-android`, `react-android`, `timber`, `dropbox-core-sdk` |
+> **Tip:** If you have issues with Gradle 9.0, use the [modified Gradle script](https://gist.githubusercontent.com/ihassantariq/00a23cca84ab4e14b66209dbf96dff40/raw/bbe8975429fc231d06ba1438632ade994792fa90/MauiDependencies.gradle) instead.
 
-All files land in `NativeBinaries/android/deps/` and are referenced by the demo app's `.csproj`:
+All resolved files land in `NativeBinaries/android/deps/` and are referenced by the demo app's `.csproj`:
 ```xml
 <AndroidAarLibrary Include="..\NativeBinaries\android\deps\*.aar" />
 <AndroidJavaLibrary Include="..\NativeBinaries\android\deps\*.jar" />
@@ -239,13 +243,7 @@ All files land in `NativeBinaries/android/deps/` and are referenced by the demo 
 
 #### Handling AAR Naming Conflicts
 
-Sometimes two AARs contain the same Java package, causing the build to fail. The **`auto_rename_aars.sh`** script automates the fix:
-
-```bash
-./auto_rename_aars.sh
-```
-
-It loops the build, detects conflicting AAR names from the error log, and renames the offending file from `.aar` to `.zip` (which excludes it from linking while keeping the file around for reference). Repeat until the build succeeds.
+Sometimes two AARs contain the same Java package, causing the build to fail. To fix this, rename the conflicting `.aar` file to `.zip` — this excludes it from linking while keeping it around for reference. Repeat the build until it succeeds.
 
 ### iOS Frameworks
 
@@ -341,10 +339,7 @@ On iOS, the `IOSJitsiMeetService` creates a `JitsiMeetView`, wraps it in a `UIVi
    ```
 
 2. **Download Android dependencies** (if the `NativeBinaries/android/deps/` folder is empty)
-   ```bash
-   chmod +x download_deps.sh
-   ./download_deps.sh
-   ```
+   Use the Gradle-based approach described in the [Android Dependencies](#android-dependencies) section to resolve and download all transitive dependencies.
 
 3. **Build and run**
    ```bash
@@ -355,11 +350,7 @@ On iOS, the `IOSJitsiMeetService` creates a `JitsiMeetView`, wraps it in a `UIVi
    dotnet build JitsiMeetDemo/JitsiMeetDemo.csproj -f net9.0-ios
    ```
 
-4. **If the Android build fails** with AAR naming conflicts:
-   ```bash
-   chmod +x auto_rename_aars.sh
-   ./auto_rename_aars.sh
-   ```
+4. **If the Android build fails** with AAR naming conflicts, rename the conflicting `.aar` to `.zip` and rebuild. See [Handling AAR Naming Conflicts](#handling-aar-naming-conflicts) for details.
 
 ---
 
@@ -460,12 +451,7 @@ When a new version of the Jitsi Meet SDK is released, here is what you need to d
 
 2. **Update transitive dependencies**
    - Check the new SDK's `pom.xml` in the Jitsi Maven repo to see if dependency versions have changed.
-   - Update `download_deps.sh` with the new Jitsi build tag (e.g. change `22286284` to the new build number) and new React Native / Hermes versions.
-   - Delete the contents of `NativeBinaries/android/deps/` and re-run:
-     ```bash
-     rm -rf NativeBinaries/android/deps/*
-     ./download_deps.sh
-     ```
+   - Delete the contents of `NativeBinaries/android/deps/` and re-resolve using the Gradle-based approach described in [Android Dependencies](#android-dependencies).
 
 3. **Fix binding errors**
    - Try building the binding project:
@@ -478,10 +464,7 @@ When a new version of the Jitsi Meet SDK is released, here is what you need to d
    - If the new SDK depends on newer AndroidX or Google Play Services versions, update the `<PackageReference>` versions in `JitsiMeet.Android.Binding.csproj`.
 
 5. **Resolve AAR conflicts**
-   - Run the demo build. If it fails with naming conflicts:
-     ```bash
-     ./auto_rename_aars.sh
-     ```
+   - Run the demo build. If it fails with naming conflicts, rename the conflicting `.aar` to `.zip` and rebuild.
 
 #### iOS Upgrade Steps
 
@@ -520,7 +503,7 @@ When a new version of the Jitsi Meet SDK is released, here is what you need to d
 | Problem | Solution |
 |---|---|
 | **XA4241 warnings** about missing Java types | These are expected — we only bind the top-level SDK. They are suppressed in the binding `.csproj`. |
-| **AAR naming conflicts** at build time | Run `./auto_rename_aars.sh` to automatically rename conflicting deps. |
+| **AAR naming conflicts** at build time | Rename the conflicting `.aar` file to `.zip` and rebuild. See [Handling AAR Naming Conflicts](#handling-aar-naming-conflicts). |
 | **AndroidX Startup / missing DEX** crash at runtime | Ensure `<EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>` is set in the demo `.csproj`. Do **not** use Fast Deployment. |
 | **iOS linker errors** about missing symbols | Ensure all 4 xcframeworks are referenced in the demo `.csproj` (not just the binding project). Check `ForceLoad` is `True`. |
 | **Login required on meet.jit.si** | The public server now requires authentication to *create* rooms. Use your own server or log in with Google/GitHub/Facebook. |
