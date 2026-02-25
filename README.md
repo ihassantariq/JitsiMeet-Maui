@@ -157,9 +157,19 @@ The iOS binding project (`JitsiMeet.iOS.Binding`) wraps the native Objective-C `
   <Kind>Framework</Kind>
   <ForceLoad>True</ForceLoad>
 </NativeReference>
+<NativeReference Include="..\NativeBinaries\ios\WebRTC.xcframework">
+  <Kind>Framework</Kind>
+  <ForceLoad>True</ForceLoad>
+</NativeReference>
+<NativeReference Include="..\NativeBinaries\ios\GiphyUISDK.xcframework">
+  <Kind>Framework</Kind>
+  <ForceLoad>True</ForceLoad>
+</NativeReference>
 ```
 
 `ForceLoad` = `True` ensures all symbols are linked, which is necessary for React Native's runtime class lookups.
+
+> **Note:** Although we are only binding `JitsiMeetSDK`, the `WebRTC.xcframework`, `hermes.xcframework`, and `GiphyUISDK.xcframework` must also be included as native references. The Jitsi Meet SDK depends on these at runtime — without them, the app will crash with missing symbol errors at launch.
 
 #### 2. API Definition — `ApiDefinition.cs`
 
@@ -247,14 +257,14 @@ Sometimes two AARs contain the same Java package, causing the build to fail. To 
 
 ### iOS Frameworks
 
-The iOS side uses pre-built `.xcframework` bundles placed in `NativeBinaries/ios/`:
+The iOS side uses pre-built `.xcframework` bundles placed in `NativeBinaries/ios/`. All four frameworks are **required** — the Jitsi Meet SDK depends on the others at runtime, and the app will crash without them:
 
-| Framework | Purpose |
-|---|---|
-| `JitsiMeetSDK.xcframework` | Core Jitsi Meet SDK |
-| `hermes.xcframework` | Hermes JavaScript engine (React Native runtime) |
-| `WebRTC.xcframework` | WebRTC media engine |
-| `GiphyUISDK.xcframework` | Giphy integration for in-meeting reactions |
+| Framework | Purpose | Why it's needed |
+|---|---|---|
+| `JitsiMeetSDK.xcframework` | Core Jitsi Meet SDK | The SDK we are binding |
+| `hermes.xcframework` | Hermes JavaScript engine | Jitsi's React Native runtime requires Hermes |
+| `WebRTC.xcframework` | WebRTC media engine | Provides audio/video calling under the hood |
+| `GiphyUISDK.xcframework` | Giphy integration | Used by Jitsi for in-meeting reactions & GIFs |
 
 These are downloaded from the official [Jitsi Meet iOS SDK releases](https://github.com/jitsi/jitsi-meet-ios-sdk-releases).
 
