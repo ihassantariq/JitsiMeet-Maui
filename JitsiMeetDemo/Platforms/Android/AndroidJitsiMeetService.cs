@@ -14,7 +14,7 @@ namespace JitsiMeetDemo.Services
             var activity = Platform.CurrentActivity;
             if (activity == null) return;
 
-            var serverUrl = new Java.Net.URL("https://meet.jit.si");
+            var serverUrl = new Java.Net.URL("https://meet.jit.si"); // you can use your own server 
 
             // Initialize global configuration if not already done
             if (Org.Jitsi.Meet.Sdk.JitsiMeet.DefaultConferenceOptions == null)

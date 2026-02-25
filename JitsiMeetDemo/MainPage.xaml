@@ -8,9 +8,10 @@
     <ScrollView>
         <VerticalStackLayout Spacing="25" Padding="30,0" VerticalOptions="Center">
 
-            <Image Source="jitsilogo.png"
+            <Image Source="logo.png"
                    SemanticProperties.Description="Jitsi Meet Logo"
                    HeightRequest="200"
+                   WidthRequest="200"
                    HorizontalOptions="Center" />
 
             <Label Text="Jitsi Meet MAUI"
