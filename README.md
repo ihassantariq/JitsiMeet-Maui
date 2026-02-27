@@ -22,6 +22,10 @@ A **.NET MAUI** sample application that integrates the [Jitsi Meet](https://jits
   - [Architecture](#architecture)
   - [Android Implementation](#android-implementation)
   - [iOS Implementation](#ios-implementation)
+- [Deep Linking & Authentication](#deep-linking--authentication)
+  - [How meet.jit.si Authentication Works](#how-meetjitsi-authentication-works)
+  - [Android Setup](#android-setup)
+  - [iOS Setup](#ios-setup)
 - [Getting Started](#getting-started)
 - [What You Can Customise](#what-you-can-customise)
 - [Versions & Upgrading](#versions--upgrading)
@@ -55,10 +59,12 @@ JitsiMeetMAUI/
 │   └── Platforms/
 │       ├── Android/
 │       │   ├── AndroidJitsiMeetService.cs  # Android IJitsiMeetService
-│       │   ├── MauiJitsiMeetActivity.cs    # Hosts the Jitsi meeting view
+│       │   ├── MauiJitsiMeetActivity.cs    # Hosts Jitsi view + deep link handling
 │       │   └── AndroidManifest.xml         # Permissions
 │       └── iOS/
-│           └── IOSJitsiMeetService.cs      # iOS IJitsiMeetService
+│           ├── AppDelegate.cs             # Handles auth redirect URL scheme
+│           ├── IOSJitsiMeetService.cs      # iOS IJitsiMeetService
+│           └── Info.plist                 # URL scheme registration
 │
 ├── NativeBinaries/                    # Pre-downloaded native SDK files
 │   ├── android/
@@ -331,6 +337,171 @@ On iOS, the `IOSJitsiMeetService` creates a `JitsiMeetView`, wraps it in a `UIVi
 
 ---
 
+## Deep Linking & Authentication
+
+The public `meet.jit.si` server requires authentication (Google/GitHub) to create rooms. The SDK handles this by opening the sign-in page in the device's browser. After the user authenticates, the browser redirects back to the app using a custom URL scheme, passing a JWT token that grants moderator/admin rights.
+
+### How meet.jit.si Authentication Works
+
+The authentication flow follows these steps:
+
+```
+1. User taps "Join" in the app
+2. SDK connects to meet.jit.si → server requires auth
+3. SDK opens browser to the Firebase sign-in page
+4. User signs in with Google or GitHub
+5. Sign-in page constructs a redirect URL with JWT token:
+   - Android: intent://meet.jit.si/Room#jwt=TOKEN#Intent;scheme=org.jitsi.meet;package=org.jitsi.meet;end
+   - iOS:     org.jitsi.meet://meet.jit.si/Room#jwt=TOKEN
+6. Browser redirects → app catches the URL → re-joins conference with JWT
+7. User enters the meeting as moderator/admin
+```
+
+> **Important**: The `disableDeepLinking` config override should be set to `true` in your conference options. This prevents the SDK's web layer from showing a "How do you want to join?" page, while still allowing the authentication redirect to work.
+
+### Android Setup
+
+#### 1. App Identifier
+
+The `meet.jit.si` auth page hardcodes `package=org.jitsi.meet` in the Android intent redirect. This means the redirect will **only** be delivered to an app with that exact package name. For development/demo purposes, set your `ApplicationId` to `org.jitsi.meet`:
+
+```xml
+<!-- In JitsiMeetDemo.csproj -->
+<ApplicationId>org.jitsi.meet</ApplicationId>
+```
+
+> ⚠️ **You must uninstall the official Jitsi Meet app** from your device first — Android doesn't allow two apps with the same package name. Remember to change this back to your own identifier before publishing.
+
+If you use a **self-hosted Jitsi server**, you can configure the auth redirect to use your own package name and skip this step entirely.
+
+#### 2. Intent Filters on MauiJitsiMeetActivity
+
+The activity must declare intent filters to handle the `org.jitsi.meet://` scheme and `https://meet.jit.si` deep links:
+
+```csharp
+[IntentFilter(
+    new[] { global::Android.Content.Intent.ActionView },
+    Categories = new[] { global::Android.Content.Intent.CategoryDefault,
+                         global::Android.Content.Intent.CategoryBrowsable },
+    DataScheme = "org.jitsi.meet")]
+[IntentFilter(
+    new[] { global::Android.Content.Intent.ActionView },
+    Categories = new[] { global::Android.Content.Intent.CategoryDefault,
+                         global::Android.Content.Intent.CategoryBrowsable },
+    DataScheme = "https",
+    DataHost = "meet.jit.si")]
+public class MauiJitsiMeetActivity : AppCompatActivity, IJitsiMeetActivityInterface
+```
+
+#### 3. Handle Deep Links in OnCreate and OnNewIntent
+
+`OnCreate` must detect whether the activity was launched from a deep link (browser) or from within the app:
+
+```csharp
+// In OnCreate:
+if (intent?.Action == Intent.ActionView && intent.Data != null)
+{
+    // Launched from browser deep link — use the full URL (includes JWT)
+    options = new JitsiMeetConferenceOptions.Builder()
+        .SetRoom(intent.Data.ToString())
+        .SetConfigOverride("disableDeepLinking", true)
+        .Build();
+}
+else
+{
+    // Normal launch from within the app
+    // ... use JitsiRoom/JitsiName/JitsiEmail extras
+}
+```
+
+`OnNewIntent` handles the auth redirect when the activity is already running:
+
+```csharp
+protected override void OnNewIntent(Intent? intent)
+{
+    base.OnNewIntent(intent);
+    if (intent?.Action == Intent.ActionView && intent.Data != null)
+    {
+        var options = new JitsiMeetConferenceOptions.Builder()
+            .SetRoom(intent.Data.ToString())
+            .Build();
+        _view.Join(options);
+        return;
+    }
+    JitsiMeetActivityDelegate.OnNewIntent(intent);
+}
+```
+
+### iOS Setup
+
+#### 1. Register URL Scheme in Info.plist
+
+```xml
+<key>CFBundleURLTypes</key>
+<array>
+    <dict>
+        <key>CFBundleURLName</key>
+        <string>org.jitsi.meet</string>
+        <key>CFBundleURLSchemes</key>
+        <array>
+            <string>org.jitsi.meet</string>
+        </array>
+    </dict>
+</array>
+```
+
+> **Note**: Unlike Android, iOS URL schemes are per-app — there's no package name constraint. Your Bundle Identifier does not need to be `org.jitsi.meet`.
+
+#### 2. Handle the URL in AppDelegate
+
+```csharp
+[Export("application:openURL:options:")]
+public override bool OpenUrl(UIApplication application, NSUrl url, NSDictionary options)
+{
+    if (url.Scheme == "org.jitsi.meet")
+    {
+        var service = IPlatformApplication.Current?.Services.GetService<IJitsiMeetService>();
+        if (service is IOSJitsiMeetService iosService)
+        {
+            iosService.JoinWithAuthUrl(url);
+            return true;
+        }
+    }
+    return base.OpenUrl(application, url, options);
+}
+```
+
+#### 3. JoinWithAuthUrl in IOSJitsiMeetService
+
+This method handles both re-joining an existing conference (auth redirect) and launching fresh from a browser deep link:
+
+```csharp
+public void JoinWithAuthUrl(NSUrl url)
+{
+    var options = JitsiMeetConferenceOptions.FromBuilder(builder =>
+    {
+        builder.Room = url.AbsoluteString;
+        builder.SetConfigOverride("disableDeepLinking", true);
+    });
+
+    if (_jitsiMeetView != null)
+    {
+        // Re-join existing conference with JWT
+        MainThread.BeginInvokeOnMainThread(() => _jitsiMeetView.Join(options));
+        return;
+    }
+
+    // Create view and present from scratch
+    MainThread.BeginInvokeOnMainThread(() =>
+    {
+        _jitsiMeetView = new JitsiMeetView { /* ... */ };
+        // ... present and join
+    });
+}
+```
+
+---
+
 ## Getting Started
 
 ### Prerequisites
@@ -516,7 +687,11 @@ When a new version of the Jitsi Meet SDK is released, here is what you need to d
 | **AAR naming conflicts** at build time | Rename the conflicting `.aar` file to `.zip` and rebuild. See [Handling AAR Naming Conflicts](#handling-aar-naming-conflicts). |
 | **AndroidX Startup / missing DEX** crash at runtime | Ensure `<EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>` is set in the demo `.csproj`. Do **not** use Fast Deployment. |
 | **iOS linker errors** about missing symbols | Ensure all 4 xcframeworks are referenced in the demo `.csproj` (not just the binding project). Check `ForceLoad` is `True`. |
-| **Login required on meet.jit.si** | The public server now requires authentication to *create* rooms. Use your own server or log in with Google/GitHub/Facebook. |
+| **Login required on meet.jit.si** | The public server now requires authentication to *create* rooms. See [Deep Linking & Authentication](#deep-linking--authentication) for the full setup. |
+| **Auth redirect not working (Android)** | `meet.jit.si` hardcodes `package=org.jitsi.meet` in the redirect. Your app's `ApplicationId` must be `org.jitsi.meet` and the official Jitsi app must be uninstalled. |
+| **Auth redirect not working (iOS)** | Ensure `org.jitsi.meet` URL scheme is registered in `Info.plist` and `AppDelegate.OpenUrl` handles it. |
+| **"How do you want to join?" page appears** | Set `.SetConfigOverride("disableDeepLinking", true)` in your conference options. |
+| **Crash on "Join in app" from browser** | `MauiJitsiMeetActivity.OnCreate` must handle `ACTION_VIEW` intents — see the [Android Setup](#android-setup) section. |
 | **Camera / mic permissions denied** | The `MainPage.xaml.cs` requests permissions at runtime. Ensure the Android manifest includes the required `uses-permission` entries. |
 
 ---

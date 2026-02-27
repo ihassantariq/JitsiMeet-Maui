@@ -26,6 +26,15 @@ namespace JitsiMeetDemo.Platforms.Android
             global::Android.Content.PM.ConfigChanges.Touchscreen | 
             global::Android.Content.PM.ConfigChanges.UiMode,
         SupportsPictureInPicture = true)]
+    [IntentFilter(
+        new[] { global::Android.Content.Intent.ActionView },
+        Categories = new[] { global::Android.Content.Intent.CategoryDefault, global::Android.Content.Intent.CategoryBrowsable },
+        DataScheme = "org.jitsi.meet")]
+    [IntentFilter(
+        new[] { global::Android.Content.Intent.ActionView },
+        Categories = new[] { global::Android.Content.Intent.CategoryDefault, global::Android.Content.Intent.CategoryBrowsable },
+        DataScheme = "https",
+        DataHost = "meet.jit.si")]
     public class MauiJitsiMeetActivity : AppCompatActivity, Org.Jitsi.Meet.Sdk.IJitsiMeetActivityInterface
     {
         private JitsiMeetView _view;
@@ -64,26 +73,40 @@ namespace JitsiMeetDemo.Platforms.Android
             _view = new JitsiMeetView(this);
             global::Android.Content.Intent intent = Intent;
 
-            string roomName = intent?.GetStringExtra("JitsiRoom") ?? "";
-            string displayName = intent?.GetStringExtra("JitsiName") ?? "";
-            string email = intent?.GetStringExtra("JitsiEmail") ?? "";
+            JitsiMeetConferenceOptions options;
 
-            var userInfo = new JitsiMeetUserInfo();
-            if (!string.IsNullOrEmpty(displayName))
-                userInfo.DisplayName = displayName;
-            if (!string.IsNullOrEmpty(email))
-                userInfo.Email = email;
+            // Check if launched from a deep link (browser "Join in app" or auth redirect)
+            if (intent?.Action == global::Android.Content.Intent.ActionView && intent.Data != null)
+            {
+                options = new JitsiMeetConferenceOptions.Builder()
+                    .SetRoom(intent.Data.ToString())
+                    .SetConfigOverride("disableDeepLinking", true)
+                    .Build();
+            }
+            else
+            {
+                // Normal launch from within the app
+                string roomName = intent?.GetStringExtra("JitsiRoom") ?? "";
+                string displayName = intent?.GetStringExtra("JitsiName") ?? "";
+                string email = intent?.GetStringExtra("JitsiEmail") ?? "";
 
-            var options = new JitsiMeetConferenceOptions.Builder()
-                .SetServerURL(new Java.Net.URL("https://meet.jit.si"))
-                .SetRoom(roomName)
-                .SetUserInfo(userInfo)
-                .SetFeatureFlag("chat.enabled", true)
-                .SetFeatureFlag("invite.enabled", true)
-                .SetFeatureFlag("prejoinpage.enabled", true)
-                .SetFeatureFlag("welcomepage.enabled", false)
-                .SetConfigOverride("disableDeepLinking", "true")
-                .Build();
+                var userInfo = new JitsiMeetUserInfo();
+                if (!string.IsNullOrEmpty(displayName))
+                    userInfo.DisplayName = displayName;
+                if (!string.IsNullOrEmpty(email))
+                    userInfo.Email = email;
+
+                options = new JitsiMeetConferenceOptions.Builder()
+                    .SetServerURL(new Java.Net.URL("https://meet.jit.si"))
+                    .SetRoom(roomName)
+                    .SetUserInfo(userInfo)
+                    .SetFeatureFlag("chat.enabled", true)
+                    .SetFeatureFlag("invite.enabled", true)
+                    .SetFeatureFlag("prejoinpage.enabled", true)
+                    .SetFeatureFlag("welcomepage.enabled", false)
+                    .SetConfigOverride("disableDeepLinking", true)
+                    .Build();
+            }
 
             _view.Join(options);
             SetContentView(_view);
@@ -123,6 +146,18 @@ namespace JitsiMeetDemo.Platforms.Android
         protected override void OnNewIntent(Intent? intent)
         {
             base.OnNewIntent(intent);
+
+            // Handle auth redirect: the intent contains the room URL with JWT token
+            // e.g. org.jitsi.meet://meet.jit.si/Room123#jwt=TOKEN
+            if (intent?.Action == global::Android.Content.Intent.ActionView && intent.Data != null)
+            {
+                var options = new JitsiMeetConferenceOptions.Builder()
+                    .SetRoom(intent.Data.ToString())
+                    .Build();
+                _view.Join(options);
+                return;
+            }
+
             JitsiMeetActivityDelegate.OnNewIntent(intent);
         }
 

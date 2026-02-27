@@ -51,6 +51,49 @@ namespace JitsiMeetDemo.Services
             });
         }
 
+        // Called from AppDelegate when a deep link or auth redirect URL arrives
+        // URL looks like: org.jitsi.meet://meet.jit.si/Room123#jwt=TOKEN
+        public void JoinWithAuthUrl(NSUrl url)
+        {
+            var options = JitsiMeetConferenceOptions.FromBuilder(builder =>
+            {
+                builder.Room = url.AbsoluteString;
+                builder.SetConfigOverride("disableDeepLinking", true);
+            });
+
+            // If an active conference view exists, re-join with the JWT
+            if (_jitsiMeetView != null)
+            {
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    _jitsiMeetView.Join(options);
+                });
+                return;
+            }
+
+            // App launched fresh from a deep link — create the view
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                _jitsiMeetView = new JitsiMeetView
+                {
+                    Frame = UIScreen.MainScreen.Bounds,
+                    Delegate = new CustomJitsiDelegate(this)
+                };
+
+                _viewController = new UIViewController
+                {
+                    View = _jitsiMeetView,
+                    ModalPresentationStyle = UIModalPresentationStyle.FullScreen
+                };
+
+                var currentController = Platform.GetCurrentUIViewController();
+                currentController?.PresentViewController(_viewController, true, () =>
+                {
+                    _jitsiMeetView.Join(options);
+                });
+            });
+        }
+
         public void LeaveMeeting()
         {
             _jitsiMeetView?.Leave();

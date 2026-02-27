@@ -32,5 +32,16 @@
 	<string>This app requires access to the camera to participate in video conferences.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>This app requires access to the microphone to participate in audio conferences.</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>org.jitsi.meet</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>org.jitsi.meet</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>
