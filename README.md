@@ -2,10 +2,9 @@
 
 A **.NET MAUI** sample application that integrates the [Jitsi Meet](https://jitsi.org/) video-conferencing SDK on both **Android** and **iOS** through native binding libraries. This project demonstrates how to create C# bindings for a complex native SDK and consume them from a cross-platform .NET MAUI app.
 
-<!-- Add your own screenshots here
-![Android Screenshot](docs/screenshot_android.png)
-![iOS Screenshot](docs/screenshot_ios.png)
--->
+## Demo
+
+https://github.com/ihassantariq/JitsiMeet-Maui/raw/main/docs/demo.mp4
 
 ---
 
