@@ -4,7 +4,7 @@ A **.NET MAUI** sample application that integrates the [Jitsi Meet](https://jits
 
 ## Demo
 
-https://github.com/ihassantariq/JitsiMeet-Maui/raw/main/docs/demo.mp4
+https://github.com/ihassantariq/JitsiMeet-Maui/docs/demo.mp4
 
 ---
 
