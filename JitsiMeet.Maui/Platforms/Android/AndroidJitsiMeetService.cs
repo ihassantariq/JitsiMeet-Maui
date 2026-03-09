@@ -37,7 +37,12 @@ public class AndroidJitsiMeetService : IJitsiMeetService
         {
             foreach (var flag in options.FeatureFlags)
             {
-                intent.PutExtra($"JitsiFeatureFlag_{flag.Key}", flag.Value?.ToString() ?? "");
+                if (flag.Value is bool boolVal)
+                    intent.PutExtra($"JitsiFeatureFlag_bool_{flag.Key}", boolVal);
+                else if (flag.Value is int intVal)
+                    intent.PutExtra($"JitsiFeatureFlag_int_{flag.Key}", intVal);
+                else
+                    intent.PutExtra($"JitsiFeatureFlag_str_{flag.Key}", flag.Value?.ToString() ?? "");
             }
         }
 
@@ -45,7 +50,12 @@ public class AndroidJitsiMeetService : IJitsiMeetService
         {
             foreach (var config in options.ConfigOverrides)
             {
-                intent.PutExtra($"JitsiConfig_{config.Key}", config.Value?.ToString() ?? "");
+                if (config.Value is bool boolVal)
+                    intent.PutExtra($"JitsiConfig_bool_{config.Key}", boolVal);
+                else if (config.Value is int intVal)
+                    intent.PutExtra($"JitsiConfig_int_{config.Key}", intVal);
+                else
+                    intent.PutExtra($"JitsiConfig_str_{config.Key}", config.Value?.ToString() ?? "");
             }
         }
 

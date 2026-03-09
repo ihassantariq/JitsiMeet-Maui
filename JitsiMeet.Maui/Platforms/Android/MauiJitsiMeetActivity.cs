@@ -36,8 +36,8 @@ namespace JitsiMeet.Maui.Platforms.Android;
     DataHost = "meet.jit.si")]
 public class MauiJitsiMeetActivity : AppCompatActivity, Org.Jitsi.Meet.Sdk.IJitsiMeetActivityInterface
 {
-    private JitsiMeetView _view;
-    private JitsiBroadcastReceiver _broadcastReceiver;
+    private JitsiMeetView? _view;
+    private JitsiBroadcastReceiver? _broadcastReceiver;
 
     private class JitsiBroadcastReceiver : global::Android.Content.BroadcastReceiver
     {
@@ -108,29 +108,41 @@ public class MauiJitsiMeetActivity : AppCompatActivity, Org.Jitsi.Meet.Sdk.IJits
             if (!string.IsNullOrEmpty(jwt))
                 builder.SetToken(jwt);
 
-            // Apply feature flags from intent extras
+            // Apply feature flags and config overrides from intent extras
             var extras = intent?.Extras;
             if (extras != null)
             {
                 foreach (var key in extras.KeySet()!)
                 {
-                    if (key.StartsWith("JitsiFeatureFlag_"))
+                    if (key.StartsWith("JitsiFeatureFlag_bool_"))
                     {
-                        var flagName = key.Substring("JitsiFeatureFlag_".Length);
-                        var flagValue = extras.GetString(key);
-                        if (bool.TryParse(flagValue, out var boolVal))
-                            builder.SetFeatureFlag(flagName, boolVal);
-                        else
-                            builder.SetFeatureFlag(flagName, flagValue);
+                        var flagName = key.Substring("JitsiFeatureFlag_bool_".Length);
+                        builder.SetFeatureFlag(flagName, extras.GetBoolean(key));
                     }
-                    else if (key.StartsWith("JitsiConfig_"))
+                    else if (key.StartsWith("JitsiFeatureFlag_int_"))
                     {
-                        var configName = key.Substring("JitsiConfig_".Length);
-                        var configValue = extras.GetString(key);
-                        if (bool.TryParse(configValue, out var boolVal))
-                            builder.SetConfigOverride(configName, boolVal);
-                        else
-                            builder.SetConfigOverride(configName, configValue);
+                        var flagName = key.Substring("JitsiFeatureFlag_int_".Length);
+                        builder.SetFeatureFlag(flagName, extras.GetInt(key));
+                    }
+                    else if (key.StartsWith("JitsiFeatureFlag_str_"))
+                    {
+                        var flagName = key.Substring("JitsiFeatureFlag_str_".Length);
+                        builder.SetFeatureFlag(flagName, extras.GetString(key));
+                    }
+                    else if (key.StartsWith("JitsiConfig_bool_"))
+                    {
+                        var configName = key.Substring("JitsiConfig_bool_".Length);
+                        builder.SetConfigOverride(configName, extras.GetBoolean(key));
+                    }
+                    else if (key.StartsWith("JitsiConfig_int_"))
+                    {
+                        var configName = key.Substring("JitsiConfig_int_".Length);
+                        builder.SetConfigOverride(configName, extras.GetInt(key));
+                    }
+                    else if (key.StartsWith("JitsiConfig_str_"))
+                    {
+                        var configName = key.Substring("JitsiConfig_str_".Length);
+                        builder.SetConfigOverride(configName, extras.GetString(key));
                     }
                 }
             }
@@ -145,7 +157,8 @@ public class MauiJitsiMeetActivity : AppCompatActivity, Org.Jitsi.Meet.Sdk.IJits
     protected override void OnDestroy()
     {
         base.OnDestroy();
-        LocalBroadcastManager.GetInstance(this).UnregisterReceiver(_broadcastReceiver);
+        if (_broadcastReceiver != null)
+            LocalBroadcastManager.GetInstance(this).UnregisterReceiver(_broadcastReceiver);
         _view?.Dispose();
         JitsiMeetActivityDelegate.OnHostDestroy(this);
     }
