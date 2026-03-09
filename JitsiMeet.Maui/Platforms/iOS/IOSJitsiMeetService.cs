@@ -41,7 +41,7 @@ public class IOSJitsiMeetService : IJitsiMeetService
                     if (flag.Value is bool boolVal)
                         builder.SetFeatureFlag(flag.Key, boolVal);
                     else
-                        builder.SetFeatureFlag(flag.Key, flag.Value);
+                        builder.SetFeatureFlag(flag.Key, NSObject.FromObject(flag.Value));
                 }
             }
 
@@ -52,7 +52,7 @@ public class IOSJitsiMeetService : IJitsiMeetService
                     if (config.Value is bool boolVal)
                         builder.SetConfigOverride(config.Key, boolVal);
                     else
-                        builder.SetConfigOverride(config.Key, config.Value);
+                        builder.SetConfigOverride(config.Key, NSObject.FromObject(config.Value));
                 }
             }
         });
