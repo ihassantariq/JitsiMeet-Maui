@@ -2,7 +2,7 @@ name: Build and Publish NuGet Package
 
 on:
   push:
-    branches: [ main ]
+    branches: [ plugin-net-maui ]
     tags: [ 'v*' ]
   workflow_dispatch:
 
