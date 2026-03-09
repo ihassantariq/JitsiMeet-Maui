@@ -1,6 +1,7 @@
 ﻿using Foundation;
 using UIKit;
-using JitsiMeetDemo.Services;
+using JitsiMeet.Maui;
+using JitsiMeet.Maui.Platforms.iOS;
 
 namespace JitsiMeetDemo;
 

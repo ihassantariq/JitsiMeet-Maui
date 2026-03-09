@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using JitsiMeet.Maui;
 
 namespace JitsiMeetDemo;
 
@@ -9,6 +10,7 @@ public static class MauiProgram
 		var builder = MauiApp.CreateBuilder();
 		builder
 			.UseMauiApp<App>()
+			.UseJitsiMeet()
 			.ConfigureFonts(fonts =>
 			{
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -17,12 +19,6 @@ public static class MauiProgram
 
 #if DEBUG
 		builder.Logging.AddDebug();
-#endif
-
-#if ANDROID
-		builder.Services.AddSingleton<IJitsiMeetService, JitsiMeetDemo.Services.AndroidJitsiMeetService>();
-#elif IOS
-		builder.Services.AddSingleton<IJitsiMeetService, JitsiMeetDemo.Services.IOSJitsiMeetService>();
 #endif
 
 		builder.Services.AddTransient<MainPage>();
