@@ -7,7 +7,7 @@ namespace Com.Facebook.React.Modules.Core
     [Register("com/facebook/react/modules/core/PermissionListener", "", "")]
     public interface IPermissionListener : IJavaObject, IJavaPeerable
     {
-        [Register("onRequestPermissionsResult", "(I[Ljava/lang/String;[I)Z", "GetOnRequestPermissionsResult_IarrayLjava_lang_String_arrayIHandler:Com.Facebook.React.Modules.Core.IPermissionListenerInvoker, JitsiMeetDemo")]
+        [Register("onRequestPermissionsResult", "(I[Ljava/lang/String;[I)Z", "GetOnRequestPermissionsResult_IarrayLjava_lang_String_arrayIHandler:Com.Facebook.React.Modules.Core.IPermissionListenerInvoker, JitsiMeet.Maui")]
         bool OnRequestPermissionsResult(int requestCode, string[] permissions, int[] grantResults);
     }
 
@@ -39,16 +39,16 @@ namespace Com.Facebook.React.Modules.Core
     [Register("com/facebook/react/modules/core/PermissionAwareActivity", "", "")]
     public interface IPermissionAwareActivity : IJavaObject, IJavaPeerable
     {
-        [Register("checkPermission", "(Ljava/lang/String;II)I", "GetCheckPermission_Ljava_lang_String_IIHandler:Com.Facebook.React.Modules.Core.IPermissionAwareActivityInvoker, JitsiMeetDemo")]
+        [Register("checkPermission", "(Ljava/lang/String;II)I", "GetCheckPermission_Ljava_lang_String_IIHandler:Com.Facebook.React.Modules.Core.IPermissionAwareActivityInvoker, JitsiMeet.Maui")]
         int CheckPermission(string permission, int pid, int uid);
 
-        [Register("checkSelfPermission", "(Ljava/lang/String;)I", "GetCheckSelfPermission_Ljava_lang_String_Handler:Com.Facebook.React.Modules.Core.IPermissionAwareActivityInvoker, JitsiMeetDemo")]
+        [Register("checkSelfPermission", "(Ljava/lang/String;)I", "GetCheckSelfPermission_Ljava_lang_String_Handler:Com.Facebook.React.Modules.Core.IPermissionAwareActivityInvoker, JitsiMeet.Maui")]
         int CheckSelfPermission(string permission);
 
-        [Register("shouldShowRequestPermissionRationale", "(Ljava/lang/String;)Z", "GetShouldShowRequestPermissionRationale_Ljava_lang_String_Handler:Com.Facebook.React.Modules.Core.IPermissionAwareActivityInvoker, JitsiMeetDemo")]
+        [Register("shouldShowRequestPermissionRationale", "(Ljava/lang/String;)Z", "GetShouldShowRequestPermissionRationale_Ljava_lang_String_Handler:Com.Facebook.React.Modules.Core.IPermissionAwareActivityInvoker, JitsiMeet.Maui")]
         bool ShouldShowRequestPermissionRationale(string permission);
 
-        [Register("requestPermissions", "([Ljava/lang/String;ILcom/facebook/react/modules/core/PermissionListener;)V", "GetRequestPermissions_arrayLjava_lang_String_ILcom_facebook_react_modules_core_PermissionListener_Handler:Com.Facebook.React.Modules.Core.IPermissionAwareActivityInvoker, JitsiMeetDemo")]
+        [Register("requestPermissions", "([Ljava/lang/String;ILcom/facebook/react/modules/core/PermissionListener;)V", "GetRequestPermissions_arrayLjava_lang_String_ILcom_facebook_react_modules_core_PermissionListener_Handler:Com.Facebook.React.Modules.Core.IPermissionAwareActivityInvoker, JitsiMeet.Maui")]
         void RequestPermissions(string[] permissions, int requestCode, IPermissionListener listener);
     }
 

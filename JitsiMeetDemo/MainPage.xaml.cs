@@ -1,4 +1,6 @@
-﻿namespace JitsiMeetDemo;
+﻿using JitsiMeet.Maui;
+
+namespace JitsiMeetDemo;
 
 public partial class MainPage : ContentPage
 {
@@ -36,6 +38,15 @@ public partial class MainPage : ContentPage
             return;
         }
 
-        _jitsiMeetService?.JoinMeeting(RoomEntry.Text, NameEntry.Text, "");
+        var options = new JitsiMeetOptions
+        {
+            RoomName = RoomEntry.Text,
+            DisplayName = NameEntry.Text,
+            VideoMuted = true,
+            AudioMuted = false
+        };
+
+        if (_jitsiMeetService != null)
+            await _jitsiMeetService.JoinMeetingAsync(options);
     }
 }

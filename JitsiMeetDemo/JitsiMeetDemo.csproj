@@ -65,18 +65,8 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.0" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
-		<ProjectReference Include="..\JitsiMeet.Android.Binding\JitsiMeet.Android.Binding.csproj" />
-		<AndroidAarLibrary Include="..\NativeBinaries\android\deps\*.aar" />
-		<AndroidJavaLibrary Include="..\NativeBinaries\android\deps\*.jar" />
-	</ItemGroup>
-
-	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
-		<ProjectReference Include="..\JitsiMeet.iOS.Binding\JitsiMeet.iOS.Binding.csproj" />
-		<NativeReference Include="..\NativeBinaries\ios\JitsiMeetSDK.xcframework" Kind="Framework" />
-		<NativeReference Include="..\NativeBinaries\ios\hermes.xcframework" Kind="Framework" />
-		<NativeReference Include="..\NativeBinaries\ios\GiphyUISDK.xcframework" Kind="Framework" />
-		<NativeReference Include="..\NativeBinaries\ios\WebRTC.xcframework" Kind="Framework" />
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android' Or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
+		<ProjectReference Include="..\JitsiMeet.Maui\JitsiMeet.Maui.csproj" />
 	</ItemGroup>
 
 </Project>

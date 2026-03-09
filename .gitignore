@@ -7,3 +7,5 @@ obj/
 *.suo
 *.sln.docstates
 .DS_Store
+nupkgs/
+*.nupkg
