@@ -150,7 +150,7 @@ public class MauiJitsiMeetActivity : AppCompatActivity, Org.Jitsi.Meet.Sdk.IJits
             options = builder.Build();
         }
 
-        _view.Join(options);
+        _view?.Join(options);
         SetContentView(_view);
     }
 
@@ -195,7 +195,7 @@ public class MauiJitsiMeetActivity : AppCompatActivity, Org.Jitsi.Meet.Sdk.IJits
             var newOptions = new JitsiMeetConferenceOptions.Builder()
                 .SetRoom(intent.Data.ToString())
                 .Build();
-            _view.Join(newOptions);
+            _view?.Join(newOptions);
             return;
         }
 
