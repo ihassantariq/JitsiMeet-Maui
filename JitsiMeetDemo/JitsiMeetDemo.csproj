@@ -69,4 +69,23 @@
 		<ProjectReference Include="..\JitsiMeet.Maui\JitsiMeet.Maui.csproj" />
 	</ItemGroup>
 
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
+		<NativeReference Include="..\NativeBinaries\ios\JitsiMeetSDK.xcframework">
+			<Kind>Framework</Kind>
+			<IsStatic>False</IsStatic>
+		</NativeReference>
+		<NativeReference Include="..\NativeBinaries\ios\hermes.xcframework">
+			<Kind>Framework</Kind>
+			<IsStatic>False</IsStatic>
+		</NativeReference>
+		<NativeReference Include="..\NativeBinaries\ios\GiphyUISDK.xcframework">
+			<Kind>Framework</Kind>
+			<IsStatic>False</IsStatic>
+		</NativeReference>
+		<NativeReference Include="..\NativeBinaries\ios\WebRTC.xcframework">
+			<Kind>Framework</Kind>
+			<IsStatic>False</IsStatic>
+		</NativeReference>
+	</ItemGroup>
+
 </Project>
