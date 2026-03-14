@@ -11,6 +11,7 @@ using AndroidX.LocalBroadcastManager.Content;
 namespace JitsiMeet.Maui.Platforms.Android;
 
 [Activity(
+    Theme = "@style/Theme.AppCompat.Light.NoActionBar",
     Exported = true,
     LaunchMode = global::Android.Content.PM.LaunchMode.SingleTask,
     ConfigurationChanges = global::Android.Content.PM.ConfigChanges.Keyboard |
