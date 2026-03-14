@@ -35,8 +35,8 @@
   <!-- Android-specific references -->
   <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
     <ProjectReference Include="..\JitsiMeet.Android.Binding\JitsiMeet.Android.Binding.csproj" />
-    <AndroidAarLibrary Include="..\NativeBinaries\android\deps\*.aar" />
-    <AndroidJavaLibrary Include="..\NativeBinaries\android\deps\*.jar" />
+    <AndroidLibrary Include="..\NativeBinaries\android\deps\*.aar" Bind="false" />
+    <AndroidLibrary Include="..\NativeBinaries\android\deps\*.jar" Bind="false" />
   </ItemGroup>
 
   <!-- iOS-specific references -->
