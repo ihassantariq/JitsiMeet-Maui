@@ -40,6 +40,16 @@ jobs:
           echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
           echo "Package version: ${VERSION}"
 
+      #  Download native binaries from GitHub Releases
+      - name: Download Native Binaries
+        run: |
+          curl -L "https://github.com/ihassantariq/JitsiMeet-Maui/releases/download/native-v1.0.0/native-android.zip" -o native-android.zip
+          unzip -o native-android.zip -d .
+          rm native-android.zip
+          curl -L "https://github.com/ihassantariq/JitsiMeet-Maui/releases/download/native-v1.0.0/native-ios.zip" -o native-ios.zip
+          unzip -o native-ios.zip -d .
+          rm native-ios.zip
+
       - name: Restore dependencies
         run: |
           dotnet restore JitsiMeet.Android.Binding/JitsiMeet.Android.Binding.csproj
