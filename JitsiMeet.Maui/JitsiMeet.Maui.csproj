@@ -14,11 +14,11 @@
     <IsPackable>true</IsPackable>
     <PackageId>JitsiMeet.Maui</PackageId>
     <Version>1.0.0</Version>
-    <Authors>andersonvieiragomeslopes</Authors>
+    <Authors>ihassantariq,andersonvieiragomeslopes</Authors>
     <Description>Jitsi Meet plugin for .NET MAUI. Provides a cross-platform API to integrate Jitsi Meet video conferencing into .NET MAUI applications on Android and iOS.</Description>
     <PackageTags>jitsi;meet;maui;dotnet;video;conference;webrtc</PackageTags>
-    <RepositoryUrl>https://github.com/andersonvieiragomeslopes/JitsiMeet-Maui</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/ihassantariq/JitsiMeet-Maui</RepositoryUrl>
+    <RepositoryType>https://github.com/ihassantariq/JitsiMeet-Maui/tree/plugin-1.0.0-preview</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
