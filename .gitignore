@@ -9,3 +9,8 @@ obj/
 .DS_Store
 nupkgs/
 *.nupkg
+native-ios.zip
+native-android.zip
+JitsiMeetDemo/jitsi-native
+NativeBinaries
+**/.DS_Store

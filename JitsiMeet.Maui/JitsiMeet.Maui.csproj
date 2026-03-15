@@ -58,6 +58,11 @@
     <PackageReference Include="Xamarin.AndroidX.SwipeRefreshLayout" Version="1.1.0.27" />
     <PackageReference Include="GoogleGson" Version="2.13.0.1" />
     <PackageReference Include="Xamarin.GooglePlayServices.Auth" Version="121.0.0" />
+   
+  </ItemGroup>
+
+  <ItemGroup>
+      <PackageReference Include="Xamarin.Build.Download" Version="0.11.4" />
   </ItemGroup>
 
   <!-- iOS build/compile references - conditional -->
@@ -67,34 +72,18 @@
     </ProjectReference>
   </ItemGroup>
 
-    <!--  Pack items - NOT conditional so they always get included -->
+    <!--  Pack items - no more bundled AARs/xcframeworks -->
   <ItemGroup>
 
-    <!-- Android binding DLL - must be in lib to be deployed -->
-    <None Include="..\JitsiMeet.Android.Binding\bin\Release\net9.0-android\JitsiMeet.Android.Binding.dll"
-          Pack="true"
-          PackagePath="lib\net9.0-android35.0\" />
-
-    <!-- Android targets file - stays in buildTransitive -->
+    <!-- Android targets file -->
     <None Include="buildTransitive\net9.0-android35.0\JitsiMeet.Maui.targets"
           Pack="true"
           PackagePath="buildTransitive\net9.0-android35.0\" />
 
-    <!-- AARs and JARs - stay in buildTransitive -->
-    <None Include="..\NativeBinaries\android\jitsi-meet-sdk-12.0.0.aar"
+    <!-- Android binding DLL -->
+    <None Include="..\JitsiMeet.Android.Binding\bin\Release\net9.0-android\JitsiMeet.Android.Binding.dll"
           Pack="true"
-          PackagePath="buildTransitive\net9.0-android35.0\" />
-    <None Include="..\NativeBinaries\android\deps\*.aar"
-          Pack="true"
-          PackagePath="buildTransitive\net9.0-android35.0\" />
-    <None Include="..\NativeBinaries\android\deps\*.jar"
-          Pack="true"
-          PackagePath="buildTransitive\net9.0-android35.0\" />
-
-    <!-- iOS binding DLL -->
-    <None Include="..\JitsiMeet.iOS.Binding\bin\Release\net9.0-ios\JitsiMeet.iOS.Binding.dll"
-          Pack="true"
-          PackagePath="lib\net9.0-ios18.0\" />
+          PackagePath="lib\net9.0-android35.0\" />
 
     <!-- iOS targets file -->
     <None Include="buildTransitive\net9.0-ios18.0\JitsiMeet.Maui.targets"
@@ -105,20 +94,6 @@
     <None Include="..\JitsiMeet.iOS.Binding\bin\Release\net9.0-ios\JitsiMeet.iOS.Binding.dll"
           Pack="true"
           PackagePath="lib\net9.0-ios18.0\" />
-
-    <!-- iOS xcframeworks - must be in buildTransitive so targets file can reference them -->
-    <None Include="..\NativeBinaries\ios\JitsiMeetSDK.xcframework\**"
-          Pack="true"
-          PackagePath="buildTransitive\net9.0-ios18.0\JitsiMeetSDK.xcframework\" />
-    <None Include="..\NativeBinaries\ios\hermes.xcframework\**"
-          Pack="true"
-          PackagePath="buildTransitive\net9.0-ios18.0\hermes.xcframework\" />
-    <None Include="..\NativeBinaries\ios\GiphyUISDK.xcframework\**"
-          Pack="true"
-          PackagePath="buildTransitive\net9.0-ios18.0\GiphyUISDK.xcframework\" />
-    <None Include="..\NativeBinaries\ios\WebRTC.xcframework\**"
-          Pack="true"
-          PackagePath="buildTransitive\net9.0-ios18.0\WebRTC.xcframework\" />
 
   </ItemGroup>
 

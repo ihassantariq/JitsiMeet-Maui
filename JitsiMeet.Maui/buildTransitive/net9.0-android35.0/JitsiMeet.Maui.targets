@@ -1,7 +1,14 @@
 <Project>
   <ItemGroup>
-    <AndroidLibrary Include="$(MSBuildThisFileDirectory)jitsi-meet-sdk-12.0.0.aar" Bind="false" />
-    <AndroidLibrary Include="$(MSBuildThisFileDirectory)*.aar" Bind="false" />
-    <AndroidLibrary Include="$(MSBuildThisFileDirectory)*.jar" Bind="false" />
+    <XamarinBuildDownload Include="jitsi-native-android">
+      <Url>https://github.com/ihassantariq/JitsiMeet-Maui/releases/download/native-v1.0.0/native-android.zip</Url>
+      <Kind>Zip</Kind>
+    </XamarinBuildDownload>
+  </ItemGroup>
+
+  <ItemGroup>
+    <AndroidLibrary Include="$(XamarinBuildDownloadDir)jitsi-native-android/NativeBinaries/android/jitsi-meet-sdk-12.0.0.aar" Bind="false" />
+    <AndroidLibrary Include="$(XamarinBuildDownloadDir)jitsi-native-android/NativeBinaries/android/deps/*.aar" Bind="false" />
+    <AndroidLibrary Include="$(XamarinBuildDownloadDir)jitsi-native-android/NativeBinaries/android/deps/*.jar" Bind="false" />
   </ItemGroup>
 </Project>

@@ -1,18 +1,25 @@
 <Project>
   <ItemGroup>
-    <NativeReference Include="$(MSBuildThisFileDirectory)JitsiMeetSDK.xcframework">
+    <XamarinBuildDownload Include="jitsi-native-ios">
+      <Url>https://github.com/ihassantariq/JitsiMeet-Maui/releases/download/native-v1.0.0/native-ios.zip</Url>
+      <Kind>Zip</Kind>
+    </XamarinBuildDownload>
+  </ItemGroup>
+
+  <ItemGroup>
+    <NativeReference Include="$(XamarinBuildDownloadDir)jitsi-native-ios/NativeBinaries/ios/JitsiMeetSDK.xcframework">
       <Kind>Framework</Kind>
       <IsStatic>False</IsStatic>
     </NativeReference>
-    <NativeReference Include="$(MSBuildThisFileDirectory)hermes.xcframework">
+    <NativeReference Include="$(XamarinBuildDownloadDir)jitsi-native-ios/NativeBinaries/ios/hermes.xcframework">
       <Kind>Framework</Kind>
       <IsStatic>False</IsStatic>
     </NativeReference>
-    <NativeReference Include="$(MSBuildThisFileDirectory)GiphyUISDK.xcframework">
+    <NativeReference Include="$(XamarinBuildDownloadDir)jitsi-native-ios/NativeBinaries/ios/GiphyUISDK.xcframework">
       <Kind>Framework</Kind>
       <IsStatic>False</IsStatic>
     </NativeReference>
-    <NativeReference Include="$(MSBuildThisFileDirectory)WebRTC.xcframework">
+    <NativeReference Include="$(XamarinBuildDownloadDir)jitsi-native-ios/NativeBinaries/ios/WebRTC.xcframework">
       <Kind>Framework</Kind>
       <IsStatic>False</IsStatic>
     </NativeReference>
