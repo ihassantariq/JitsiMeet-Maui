@@ -37,33 +37,38 @@
     <PackageReference Include="Microsoft.Maui.Essentials" Version="$(MauiVersion)" />
   </ItemGroup>
 
-  <!-- Android: bundle binding DLL + native AAR/JAR directly into NuGet -->
+  <!-- Android -->
   <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+    
+    <!--  Keep ProjectReference so compiler can resolve types -->
+    <ProjectReference Include="..\JitsiMeet.Android.Binding\JitsiMeet.Android.Binding.csproj">
+      <Pack>false</Pack>   <!--  Don't pack as a dependency, we bundle it manually below -->
+    </ProjectReference>
 
-    <!--  Include compiled binding DLL directly instead of ProjectReference -->
+    <AndroidLibrary Include="..\NativeBinaries\android\deps\*.aar" Bind="false" />
+    <AndroidLibrary Include="..\NativeBinaries\android\deps\*.jar" Bind="false" />
+
+    <!--  Bundle the binding DLL into the NuGet package -->
     <None Include="..\JitsiMeet.Android.Binding\bin\Release\net9.0-android\JitsiMeet.Android.Binding.dll"
-          Pack="true"
-          PackagePath="lib\net9.0-android\" />
-
-    <!--  Bundle native AAR/JAR inside the package -->
-    <None Include="..\NativeBinaries\android\deps\*.aar"
-          Pack="true"
-          PackagePath="lib\net9.0-android\" />
-    <None Include="..\NativeBinaries\android\deps\*.jar"
           Pack="true"
           PackagePath="lib\net9.0-android\" />
 
   </ItemGroup>
 
-  <!-- iOS: bundle binding DLL + xcframeworks directly into NuGet -->
+  <!-- iOS -->
   <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
 
-    <!--  Include compiled binding DLL directly instead of ProjectReference -->
+    <!--  Keep ProjectReference so compiler can resolve types -->
+    <ProjectReference Include="..\JitsiMeet.iOS.Binding\JitsiMeet.iOS.Binding.csproj">
+      <Pack>false</Pack>   <!--  Don't pack as a dependency, we bundle it manually below -->
+    </ProjectReference>
+
+    <!--  Bundle the binding DLL into the NuGet package -->
     <None Include="..\JitsiMeet.iOS.Binding\bin\Release\net9.0-ios\JitsiMeet.iOS.Binding.dll"
           Pack="true"
           PackagePath="lib\net9.0-ios\" />
 
-    <!--  Bundle xcframeworks inside the package -->
+    <!--  Bundle xcframeworks -->
     <None Include="..\NativeBinaries\ios\JitsiMeetSDK.xcframework\**"
           Pack="true"
           PackagePath="lib\net9.0-ios\JitsiMeetSDK.xcframework\" />

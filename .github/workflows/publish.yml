@@ -41,13 +41,16 @@ jobs:
           echo "Package version: ${VERSION}"
 
       - name: Restore dependencies
-        run: dotnet restore JitsiMeet.Maui/JitsiMeet.Maui.csproj
+        run: |
+          dotnet restore JitsiMeet.Android.Binding/JitsiMeet.Android.Binding.csproj
+          dotnet restore JitsiMeet.iOS.Binding/JitsiMeet.iOS.Binding.csproj
+          dotnet restore JitsiMeet.Maui/JitsiMeet.Maui.csproj
 
       - name: Build Android Binding
-        run: dotnet build JitsiMeet.Android.Binding/JitsiMeet.Android.Binding.csproj --configuration Release
+        run: dotnet build JitsiMeet.Android.Binding/JitsiMeet.Android.Binding.csproj --configuration Release --no-restore
 
       - name: Build iOS Binding
-        run: dotnet build JitsiMeet.iOS.Binding/JitsiMeet.iOS.Binding.csproj --configuration Release
+        run: dotnet build JitsiMeet.iOS.Binding/JitsiMeet.iOS.Binding.csproj --configuration Release --no-restore
 
       - name: Build plugin
         run: dotnet build JitsiMeet.Maui/JitsiMeet.Maui.csproj --configuration Release --no-restore
