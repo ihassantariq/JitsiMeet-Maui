@@ -49,8 +49,5 @@ jobs:
       - name: Pack NuGet package
         run: dotnet pack JitsiMeet.Maui/JitsiMeet.Maui.csproj --configuration Release --no-build -p:PackageVersion=${{ steps.version.outputs.version }} --output ./nupkgs
 
-      - name: Push to NuGet.org     
-        run: dotnet nuget push ./nupkgs/*.nupkg \
-          --api-key ${{ secrets.NUGET_API_KEY }} \
-          --source https://api.nuget.org/v3/index.json \
-          --skip-duplicate
+      - name: Push to NuGet.org
+        run: dotnet nuget push ./nupkgs/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
