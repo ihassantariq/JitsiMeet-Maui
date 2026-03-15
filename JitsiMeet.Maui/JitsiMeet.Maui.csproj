@@ -15,12 +15,17 @@
     <PackageId>JitsiMeet.Maui</PackageId>
     <Version>1.0.0</Version>
     <Authors>ihassantariq,andersonvieiragomeslopes</Authors>
+    <Company>ihassantariq</Company>
+    <Copyright>Copyright © 2026 ihassantariq</Copyright>
     <Description>Jitsi Meet plugin for .NET MAUI. Provides a cross-platform API to integrate Jitsi Meet video conferencing into .NET MAUI applications on Android and iOS.</Description>
     <PackageTags>jitsi;meet;maui;dotnet;video;conference;webrtc</PackageTags>
     <RepositoryUrl>https://github.com/ihassantariq/JitsiMeet-Maui</RepositoryUrl>
-    <RepositoryType>https://github.com/ihassantariq/JitsiMeet-Maui/tree/plugin-1.0.0-preview</RepositoryType>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryBranch>plugin-1.0.0-preview</RepositoryBranch>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageProjectUrl>https://github.com/ihassantariq/JitsiMeet-Maui</PackageProjectUrl>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
@@ -32,32 +37,46 @@
     <PackageReference Include="Microsoft.Maui.Essentials" Version="$(MauiVersion)" />
   </ItemGroup>
 
-  <!-- Android-specific references -->
+  <!-- Android: bundle binding DLL + native AAR/JAR directly into NuGet -->
   <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
-    <ProjectReference Include="..\JitsiMeet.Android.Binding\JitsiMeet.Android.Binding.csproj" />
-    <AndroidLibrary Include="..\NativeBinaries\android\deps\*.aar" Bind="false" />
-    <AndroidLibrary Include="..\NativeBinaries\android\deps\*.jar" Bind="false" />
+
+    <!--  Include compiled binding DLL directly instead of ProjectReference -->
+    <None Include="..\JitsiMeet.Android.Binding\bin\Release\net9.0-android\JitsiMeet.Android.Binding.dll"
+          Pack="true"
+          PackagePath="lib\net9.0-android\" />
+
+    <!--  Bundle native AAR/JAR inside the package -->
+    <None Include="..\NativeBinaries\android\deps\*.aar"
+          Pack="true"
+          PackagePath="lib\net9.0-android\" />
+    <None Include="..\NativeBinaries\android\deps\*.jar"
+          Pack="true"
+          PackagePath="lib\net9.0-android\" />
+
   </ItemGroup>
 
-  <!-- iOS-specific references -->
+  <!-- iOS: bundle binding DLL + xcframeworks directly into NuGet -->
   <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
-    <ProjectReference Include="..\JitsiMeet.iOS.Binding\JitsiMeet.iOS.Binding.csproj" />
-    <NativeReference Include="..\NativeBinaries\ios\JitsiMeetSDK.xcframework">
-      <Kind>Framework</Kind>
-      <IsStatic>False</IsStatic>
-    </NativeReference>
-    <NativeReference Include="..\NativeBinaries\ios\hermes.xcframework">
-      <Kind>Framework</Kind>
-      <IsStatic>False</IsStatic>
-    </NativeReference>
-    <NativeReference Include="..\NativeBinaries\ios\GiphyUISDK.xcframework">
-      <Kind>Framework</Kind>
-      <IsStatic>False</IsStatic>
-    </NativeReference>
-    <NativeReference Include="..\NativeBinaries\ios\WebRTC.xcframework">
-      <Kind>Framework</Kind>
-      <IsStatic>False</IsStatic>
-    </NativeReference>
+
+    <!--  Include compiled binding DLL directly instead of ProjectReference -->
+    <None Include="..\JitsiMeet.iOS.Binding\bin\Release\net9.0-ios\JitsiMeet.iOS.Binding.dll"
+          Pack="true"
+          PackagePath="lib\net9.0-ios\" />
+
+    <!--  Bundle xcframeworks inside the package -->
+    <None Include="..\NativeBinaries\ios\JitsiMeetSDK.xcframework\**"
+          Pack="true"
+          PackagePath="lib\net9.0-ios\JitsiMeetSDK.xcframework\" />
+    <None Include="..\NativeBinaries\ios\hermes.xcframework\**"
+          Pack="true"
+          PackagePath="lib\net9.0-ios\hermes.xcframework\" />
+    <None Include="..\NativeBinaries\ios\GiphyUISDK.xcframework\**"
+          Pack="true"
+          PackagePath="lib\net9.0-ios\GiphyUISDK.xcframework\" />
+    <None Include="..\NativeBinaries\ios\WebRTC.xcframework\**"
+          Pack="true"
+          PackagePath="lib\net9.0-ios\WebRTC.xcframework\" />
+
   </ItemGroup>
 
 </Project>

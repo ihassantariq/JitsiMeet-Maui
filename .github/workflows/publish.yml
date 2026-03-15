@@ -43,7 +43,13 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore JitsiMeet.Maui/JitsiMeet.Maui.csproj
 
-      - name: Build
+      - name: Build Android Binding
+        run: dotnet build JitsiMeet.Android.Binding/JitsiMeet.Android.Binding.csproj --configuration Release
+
+      - name: Build iOS Binding
+        run: dotnet build JitsiMeet.iOS.Binding/JitsiMeet.iOS.Binding.csproj --configuration Release
+
+      - name: Build plugin
         run: dotnet build JitsiMeet.Maui/JitsiMeet.Maui.csproj --configuration Release --no-restore
 
       - name: Pack NuGet package
