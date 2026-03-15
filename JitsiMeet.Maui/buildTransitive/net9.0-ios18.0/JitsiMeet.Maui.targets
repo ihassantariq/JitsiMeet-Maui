@@ -1,0 +1,20 @@
+<Project>
+  <ItemGroup>
+    <NativeReference Include="$(MSBuildThisFileDirectory)JitsiMeetSDK.xcframework">
+      <Kind>Framework</Kind>
+      <IsStatic>False</IsStatic>
+    </NativeReference>
+    <NativeReference Include="$(MSBuildThisFileDirectory)hermes.xcframework">
+      <Kind>Framework</Kind>
+      <IsStatic>False</IsStatic>
+    </NativeReference>
+    <NativeReference Include="$(MSBuildThisFileDirectory)GiphyUISDK.xcframework">
+      <Kind>Framework</Kind>
+      <IsStatic>False</IsStatic>
+    </NativeReference>
+    <NativeReference Include="$(MSBuildThisFileDirectory)WebRTC.xcframework">
+      <Kind>Framework</Kind>
+      <IsStatic>False</IsStatic>
+    </NativeReference>
+  </ItemGroup>
+</Project>

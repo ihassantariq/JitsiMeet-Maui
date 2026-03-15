@@ -1,0 +1,4 @@
+{
+    "dotnet.defaultSolution": "JitsiMeetMAUI.sln",
+    "dotnet.project.startupProject": "JitsiMeetDemo/JitsiMeetDemo.csproj"
+}
