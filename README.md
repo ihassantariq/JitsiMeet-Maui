@@ -1,6 +1,26 @@
 # Jitsi Meet MAUI
 
-A **.NET MAUI** sample application that integrates the [Jitsi Meet](https://jitsi.org/) video-conferencing SDK on both **Android** and **iOS** through native binding libraries. This project demonstrates how to create C# bindings for a complex native SDK and consume them from a cross-platform .NET MAUI app.
+A **.NET MAUI** plugin that integrates the [Jitsi Meet](https://jitsi.org/) video-conferencing SDK on both **Android** and **iOS** through native binding libraries. This project demonstrates how to create C# bindings for a complex native SDK and consume them from a cross-platform .NET MAUI app.
+
+> 📦 **This plugin is available as a NuGet package!**
+> You can install it directly from NuGet without cloning this repository:
+> ```bash
+> dotnet add package JitsiMeet.Maui --prerelease
+> ```
+> 👉 [https://www.nuget.org/packages/JitsiMeet.Maui/1.0.0-preview.10](https://www.nuget.org/packages/JitsiMeet.Maui/1.0.0-preview.10)
+
+---
+
+## Requirements
+
+| Requirement | Minimum Version |
+|---|---|
+| **.NET** | 9.0 |
+| **Android** | API 24+ |
+| **iOS** | 15.1+ |
+| **Jitsi Meet SDK** | 12.0.0 |
+
+---
 
 ## Demo
 
